@@ -12,5 +12,6 @@ results/*
 weights/*_onnx/
 weights/*_openvino_model/
 weights/*_pruned*.pt
+weights/*.onnx
 yolo11*.pt
 !weights/yolo11n_best.pt
