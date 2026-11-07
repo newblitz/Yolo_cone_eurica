@@ -1,0 +1,9 @@
+ultralytics>=8.3.0      # first release with YOLO11
+pyyaml
+pillow
+numpy
+opencv-python
+onnx
+onnxruntime
+openvino                # optional: INT8 export/benchmark on CPU
+nncf                    # optional: needed by the OpenVINO INT8 export

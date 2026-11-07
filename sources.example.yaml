@@ -1,0 +1,47 @@
+# Copy to configs/sources.yaml and fix the paths / class names to match what you actually downloaded.
+# Unified classes: cone, barrier, stop_sign
+# `class_map` keys are matched case-insensitively and ignore '-' / '_' differences.
+# Unmapped source classes are dropped. Use `max_images` to keep the three classes roughly balanced.
+
+sources:
+  # --- cones: a Roboflow Universe "traffic cone" dataset exported as "YOLOv8"/"YOLO11" format
+  - name: cones_rf
+    type: yolo
+    root: data/raw/cones_rf          # contains data.yaml + train/valid/test/{images,labels}
+    max_images: 3000
+    class_map:
+      traffic cone: cone
+      cone: cone
+      traffic-cone: cone
+
+  # --- barriers: a Roboflow Universe "road barrier / barricade" dataset (YOLO format)
+  - name: barriers_rf
+    type: yolo
+    root: data/raw/barriers_rf
+    max_images: 3000
+    class_map:
+      barrier: barrier
+      barricade: barrier
+      road barrier: barrier
+
+  # --- stop signs from COCO 2017 (annotations json only; images are fetched from coco_url on demand)
+  - name: coco_stop
+    type: coco
+    images: data/raw/coco/images      # download cache, created automatically
+    annotations: data/raw/coco/annotations/instances_train2017.json
+    max_images: 1500
+    class_map:
+      stop sign: stop_sign
+
+  # --- stop signs on real road scenes: BDD100K + the MUTCD sign-type extension
+  # Run first:  python -m src.merge_datasets --inspect-bdd <json> sign_subtype
+  # and put the exact stop-sign value(s) printed there into attr_values.
+  - name: bdd_stop
+    type: bdd
+    images: data/raw/bdd100k/images/100k/train
+    annotations: data/raw/bdd100k_mutcd/labels_train_mutcd.json
+    category: traffic sign
+    attr_field: sign_subtype
+    attr_values: [stop_sign]
+    target_class: stop_sign
+    max_images: 1500
