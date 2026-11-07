@@ -25,7 +25,7 @@ ground-plane geometry, then fuses the available estimates.
 | TraCon cone export | https://github.com/ikatsamenis/Cone-Detection/tree/main/TraCon_dataset | Not recorded in the export |
 | Roboflow barrier, v1 | https://universe.roboflow.com/akshat-joshi-s-workspace/barrier-fn40g | CC BY 4.0 | 
 | COCO 2017 `stop sign` | https://cocodataset.org/#download | COCO terms |
-|BDD100K|https://bdd-data.berkeley.edu/|--|
+| BDD100K | https://bdd-data.berkeley.edu/ | -- |
 
 The counts above are the merged train/validation counts. COCO stop signs are
 used as labelled examples for the new class; COCO weights are not being
