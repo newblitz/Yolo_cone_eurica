@@ -1,0 +1,45 @@
+# Matches the folders created by `src.download_data` (cones_rf, barriers_rf, coco).
+# If merge_datasets prints "none matched", add the real class names it lists to the class_map below.
+sources:
+  - name: cones_rf
+    type: yolo
+    root: data/raw/cones_rf
+    max_images: 3000
+    class_map:
+      traffic cone: cone
+      cone: cone
+      cones: cone
+      traffic cones: cone
+      pylon: cone
+
+  - name: barriers_rf
+    type: yolo
+    root: data/raw/barriers_rf
+    max_images: 3000
+    class_map:
+      barrier: barrier
+      barriers: barrier
+      barricade: barrier
+      barricades: barrier
+      road barrier: barrier
+      road barricade: barrier
+
+  - name: coco_stop
+    type: coco
+    images: data/raw/coco/images
+    annotations: data/raw/coco/annotations/instances_train2017.json
+    max_images: 1500
+    class_map:
+      stop sign: stop_sign
+
+  # Optional (manual download, registration required). Uncomment after running:
+  #   python -m src.merge_datasets --inspect-bdd <labels.json> sign_subtype
+  # - name: bdd_stop
+  #   type: bdd
+  #   images: data/raw/bdd100k/images/100k/train
+  #   annotations: data/raw/bdd100k_mutcd/labels_train_mutcd.json
+  #   category: traffic sign
+  #   attr_field: sign_subtype
+  #   attr_values: [stop_sign]
+  #   target_class: stop_sign
+  #   max_images: 1500
