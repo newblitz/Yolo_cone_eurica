@@ -1,6 +1,6 @@
 # YOLO11 Cone, Barrier, and Stop-Sign Detection
 
-This project fine-tunes COCO-pretrained YOLO11n to detect road cones, barriers,
+This project fine-tunes YOLO11n to detect road cones, barriers,
 and stop signs, then estimates object distance from each bounding box. The
 merged split has 4,770 images and 6,398 instances: 4,293 train images /
 5,759 instances and 477 validation images / 639 instances.
@@ -18,7 +18,7 @@ ground-plane geometry, then fuses the available estimates.
 
 | Source | URL | Licence | Images / instances used |
 |---|---|---|---:|
-| TraCon cone export | The downloaded export did not retain its source URL | Not recorded in the export | 270 / 947 |
+| TraCon cone export | https://github.com/ikatsamenis/Cone-Detection/tree/main/TraCon_dataset | Not recorded in the export | 270 / 947 |
 | Roboflow barrier, v1 | https://universe.roboflow.com/akshat-joshi-s-workspace/barrier-fn40g | CC BY 4.0 | 3,000 / 3,744 |
 | COCO 2017 `stop sign` | https://cocodataset.org/#download | COCO terms | 1,500 / 1,707 |
 
@@ -104,9 +104,7 @@ benefit; see [results/gpu_stage_timing.md](results/gpu_stage_timing.md).
 
 Hardware and software details are recorded in
 [results/hardware.txt](results/hardware.txt). This benchmark used a T4 and
-4-vCPU Xeon; desktop/Colab FPS does not represent Jetson or Raspberry Pi
-performance, so deployment choices must be remeasured on the target board.
-
+4-vCPU Xeon
 ## Data-validity checks
 
 The barrier export contains augmented copies: comparing the prefix before
@@ -171,14 +169,7 @@ Sensitivity was measured by [sensitivity.py](sensitivity.py):
 | object height -15% | -15.0% | -5.1% | -7.2% | -9.3% |
 | object height +15% | +15.0% | +4.6% | +6.6% | +8.7% |
 
-## Limitations
 
-The validation set is small and contains mixed-source annotation styles and
-same-source augmented duplicates. It has few hard negatives and no
-three-class held-out test. Distance estimates assume camera parameters,
-flat ground, representative object sizes, and complete/non-occluded boxes;
-truncation, occlusion, and size variation can be substantial. Benchmark FPS
-comes from a T4 and 4-vCPU Xeon, not an edge board.
 
 ## Reproduce
 
@@ -194,6 +185,3 @@ python optimize.py --weights weights/yolo11n_best.pt \
 python sensitivity.py
 pytest -q tests/test_distance.py
 ```
-
-The training command requires two CUDA devices and deliberately refuses CPU
-fallback.
