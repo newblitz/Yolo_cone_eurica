@@ -7,8 +7,8 @@ merged split has 4,770 images and 6,398 instances: 4,293 train images /
 
 ## Author and contact
 
-**Prateek Singh**<br>
-Email: [prateeklector007@gmail.com](mailto:prateeklector007@gmail.com)
+**Name: Prateek Singh**<br>
+Email: [prateeklector007@gmail.com](mailto:prateeklector007@gmail.com),
 Phone:+918962255639
 
 ## Problem and approach
