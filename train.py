@@ -11,7 +11,9 @@ schedule to finish on time) - the safest option when you only have one day.
 from __future__ import annotations
 
 import argparse
+import os
 import shutil
+import time
 from pathlib import Path
 
 try:
@@ -41,6 +43,27 @@ def main():
     from ultralytics import YOLO  # imported late so --help works without it
 
     name = args.name or Path(args.model).stem
+    started = time.perf_counter()
+
+    def report_progress(trainer):
+        if os.environ.get("RANK", "-1") not in {"-1", "0"}:
+            return
+        epoch = int(trainer.epoch) + 1
+        total = int(trainer.epochs)
+        elapsed = time.perf_counter() - started
+        rate = elapsed / epoch
+        eta = max(0.0, rate * (total - epoch))
+        width = 30
+        filled = min(width, int(width * epoch / max(total, 1)))
+        bar = "#" * filled + "-" * (width - filled)
+        print(
+            f"\nTraining progress: [{bar}] {epoch}/{total} "
+            f"({epoch / max(total, 1):6.1%}) | "
+            f"elapsed {time.strftime('%H:%M:%S', time.gmtime(elapsed))} | "
+            f"ETA {time.strftime('%H:%M:%S', time.gmtime(eta))}",
+            flush=True,
+        )
+
     kw = dict(
         data=args.data, imgsz=args.imgsz, epochs=args.epochs, batch=args.batch,
         workers=args.workers, freeze=args.freeze or None, cache=args.cache,
@@ -52,6 +75,7 @@ def main():
     kw["device"] = device
 
     model = YOLO(args.model)
+    model.add_callback("on_train_epoch_end", report_progress)
     model.train(**{k: v for k, v in kw.items() if v is not None})
 
     best = Path(args.project) / name / "weights" / "best.pt"
