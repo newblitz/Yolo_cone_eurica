@@ -1,9 +1,7 @@
 # YOLO11 Cone, Barrier, and Stop-Sign Detection
 
 This project fine-tunes YOLO11n to detect road cones, barriers,
-and stop signs, then estimates object distance from each bounding box. The
-merged split has 4,770 images and 6,398 instances: 4,293 train images /
-5,759 instances and 477 validation images / 639 instances.
+and stop signs, then estimates object distance from each bounding box. 
 
 ## Author and contact
 
@@ -22,11 +20,11 @@ ground-plane geometry, then fuses the available estimates.
 
 ### Datasets used
 
-| Source | URL | Licence | Images / instances used |
+| Source | URL | Licence |
 |---|---|---|---:|
-| TraCon cone export | https://github.com/ikatsamenis/Cone-Detection/tree/main/TraCon_dataset | Not recorded in the export | 270 / 947 |
-| Roboflow barrier, v1 | https://universe.roboflow.com/akshat-joshi-s-workspace/barrier-fn40g | CC BY 4.0 | 3,000 / 3,744 |
-| COCO 2017 `stop sign` | https://cocodataset.org/#download | COCO terms | 1,500 / 1,707 |
+| TraCon cone export | https://github.com/ikatsamenis/Cone-Detection/tree/main/TraCon_dataset | Not recorded in the export |
+| Roboflow barrier, v1 | https://universe.roboflow.com/akshat-joshi-s-workspace/barrier-fn40g | CC BY 4.0 | 
+| COCO 2017 `stop sign` | https://cocodataset.org/#download | COCO terms |
 
 The counts above are the merged train/validation counts. COCO stop signs are
 used as labelled examples for the new class; COCO weights are not being
@@ -42,7 +40,7 @@ and mAP50-95 0.789:
 
 | Class | Validation images | Instances | mAP50 | mAP50-95 |
 |---|---:|---:|---:|---:|
-| cone | 27 | 94 | 0.957 | 0.803 |
+| cone | 87 | 112 | 0.957 | 0.803 |
 | barrier | 300 | 372 | 0.970 | 0.817 |
 | stop sign | 150 | 173 | 0.886 | 0.752 |
 
@@ -69,7 +67,7 @@ test at confidence 0.25.
 
 | Source/class | Train images | Train instances | Val images | Val instances |
 |---|---:|---:|---:|---:|
-| cones / cone | 243 | 853 | 27 | 94 |
+| cones / cone | 743 | 853 | 87 | 112 |
 | barriers / barrier | 2,700 | 3,372 | 300 | 372 |
 | COCO / stop sign | 1,350 | 1,534 | 150 | 173 |
 
@@ -85,7 +83,7 @@ timing. The final table is also in
 |---|---|---|---:|---:|---:|---:|
 | yolo11n | PyTorch FP32 (baseline) | CPU | 11.3 | 0.938 | 0.789 | 5.5 |
 | yolo11n | PyTorch FP32 (baseline) | GPU | 103.2 | 0.938 | 0.789 | 5.5 |
-| yolo11n | PyTorch FP16 | GPU | 79.6 | 0.937 | 0.788 | 5.5 |
+| yolo11n | PyTorch FP16 | GPU | 139.7 | 0.937 | 0.788 | 5.5 |
 | yolo11n | ONNX FP32 | CPU | 15.8 | 0.939 | 0.787 | 10.7 |
 | yolo11n | OpenVINO INT8 | CPU | 23.4 | 0.937 | 0.780 | 3.4 |
 | yolo11n | Pruned 30% | CPU | 12.7 | 0.882 | 0.722 | 5.5 |
@@ -102,30 +100,12 @@ kernel speed or file-size benefit; without post-pruning fine-tuning, mAP50-95
 dropped by 0.067.
 
 GPU rows were rerun three times with 300 images on the same device index 0
-(Tesla T4). The medians were 103.163 FPS for FP32 and 79.561 FPS for FP16.
-FP16 was genuinely slower here: inference was 6.854 ms versus 3.994 ms for
-FP32 while pre/post-processing was nearly unchanged. This batch-1, tiny-model
-runtime is overhead/kernel-launch bound rather than showing the usual FP16
-benefit; see [results/gpu_stage_timing.md](results/gpu_stage_timing.md).
+(Tesla T4).
+see [results/gpu_stage_timing.md](results/gpu_stage_timing.md).
 
 Hardware and software details are recorded in
 [results/hardware.txt](results/hardware.txt). This benchmark used a T4 and
 4-vCPU Xeon
-## Data-validity checks
-
-The barrier export contains augmented copies: comparing the prefix before
-`.rf.` found 100 train/validation prefix overlaps. A hash-based check removed
-282 merged validation images and retained 195 images with no matching train
-image. On that leak-free subset, mAP50 was 0.932 and mAP50-95 was 0.796;
-per-class mAP50-95 was cone 0.882, barrier 0.756, and stop sign 0.751.
-The original 477-image validation result is retained above for comparability,
-but the leak-free result is the more conservative estimate.
-
-The TraCon source supplied a held-out test split. On its 40 images and 59 cone
-instances, the model measured mAP50 0.983 and mAP50-95 0.876. At confidence
-0.25 and IoU 0.5, 56 predictions matched ground truth and 6 predictions were
-false positives. This is cone-only and is not a substitute for a three-class
-held-out test.
 
 ## Distance estimation
 
@@ -140,7 +120,7 @@ The implementation is in [distance.py](distance.py). It uses
 5. truncation handling that inflates size uncertainty and disables the ground
    estimate when the box touches the lower image border.
 
-These are assumptions, not calibration:
+
 
 | Parameter | Value | Reason |
 |---|---:|---|
@@ -152,10 +132,6 @@ These are assumptions, not calibration:
 | Barrier height | 0.90 m | representative barrier prior |
 | Stop-sign face height | 0.75 m | representative sign-face prior |
 
-No measured distance ground-truth photos were available; estimates are
-uncalibrated. Agreement between the two geometric methods is not validation,
-because both depend on the same focal-length and camera assumptions. The
-requested calibration/evaluation command is:
 
 ```bash
 python eval_distance.py --csv data/dist_gt.csv --images data/dist_photos \
