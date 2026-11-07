@@ -1,7 +1,8 @@
 # YOLO11 Cone, Barrier, and Stop-Sign Detection
 
 This project fine-tunes YOLO11n to detect cones, barriers, and stop signs. The
-merged validation set contains 477 images and 639 instances.
+merged dataset contains 4,770 images and 6,398 instances: 4,293 training
+images with 5,759 instances and 477 validation images with 639 instances.
 
 ## Edge benchmark
 
