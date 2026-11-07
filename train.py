@@ -78,7 +78,9 @@ def main():
     model.add_callback("on_train_epoch_end", report_progress)
     model.train(**{k: v for k, v in kw.items() if v is not None})
 
-    best = Path(args.project) / name / "weights" / "best.pt"
+    best = Path(model.trainer.save_dir) / "weights" / "best.pt"
+    if not best.is_file():
+        raise FileNotFoundError(f"Ultralytics did not produce the expected checkpoint: {best}")
     metrics = YOLO(best).val(data=args.data, imgsz=args.imgsz, device=device)
     print(f"\nmAP50: {metrics.box.map50:.3f} | mAP50-95: {metrics.box.map:.3f}")
     for i, n in metrics.names.items():
