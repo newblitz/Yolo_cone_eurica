@@ -1,0 +1,12 @@
+nvidia-smi --query-gpu=name,driver_version --format=csv
+Command unavailable in this runtime (`nvidia-smi: command not found`).
+GPU metadata from /proc/driver/nvidia:
+Tesla T4 x2
+NVIDIA driver 580.178.04
+
+lscpu | grep -E "Model name|^CPU\(s\)"
+CPU(s): 4
+Model name: Intel(R) Xeon(R) CPU @ 2.00GHz
+
+python -c "import torch, ultralytics, onnxruntime; print(torch.__version__, ultralytics.__version__, onnxruntime.__version__)"
+2.11.0+cu130 8.4.204 1.31.1
