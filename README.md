@@ -5,6 +5,11 @@ and stop signs, then estimates object distance from each bounding box. The
 merged split has 4,770 images and 6,398 instances: 4,293 train images /
 5,759 instances and 477 validation images / 639 instances.
 
+## Author and contact
+
+**Prateek Singh**<br>
+Email: [prateeklector007@gmail.com](mailto:prateeklector007@gmail.com)
+
 ## Problem and approach
 
 The detector combines three sources because BDD100K alone does not provide
