@@ -73,6 +73,25 @@ class CameraModel:
         return self.cy + self.fy * math.tan(math.radians(self.pitch_deg))
 
 
+def build_estimator(
+    width: int,
+    height: int,
+    hfov: float = 65.0,
+    focal_px: Optional[float] = None,
+    ref_width: int = 1280,
+    cam_height: float = 1.4,
+    pitch: float = 0.0,
+) -> "DistanceEstimator":
+    """Build the shared camera/estimator configuration used by CLI tools."""
+    kw = dict(cam_height_m=cam_height, pitch_deg=pitch)
+    camera = (
+        CameraModel.from_focal(width, height, focal_px, ref_width, **kw)
+        if focal_px is not None
+        else CameraModel.from_hfov(width, height, hfov, **kw)
+    )
+    return DistanceEstimator(camera)
+
+
 def calibrate_focal_px(box_height_px: float, real_height_m: float, true_distance_m: float) -> float:
     """One tape-measured photo of an object of known height gives you the focal length in px."""
     return true_distance_m * box_height_px / real_height_m

@@ -18,7 +18,10 @@ from pathlib import Path
 
 from PIL import Image
 
-from .distance import CameraModel, DistanceEstimator
+try:
+    from .distance import build_estimator
+except ImportError:
+    from distance import build_estimator
 
 
 def main():
@@ -38,10 +41,11 @@ def main():
     for r in rows:
         with Image.open(Path(args.images) / r["image"]) as im:
             w, h = im.size
-        kw = dict(cam_height_m=args.cam_height, pitch_deg=args.pitch)
-        cam = (CameraModel.from_focal(w, h, args.focal_px, args.ref_width, **kw) if args.focal_px
-               else CameraModel.from_hfov(w, h, args.hfov, **kw))
-        e = DistanceEstimator(cam).estimate(r["class"], [float(r[k]) for k in ("x1", "y1", "x2", "y2")])
+        estimator = build_estimator(
+            w, h, hfov=args.hfov, focal_px=args.focal_px, ref_width=args.ref_width,
+            cam_height=args.cam_height, pitch=args.pitch,
+        )
+        e = estimator.estimate(r["class"], [float(r[k]) for k in ("x1", "y1", "x2", "y2")])
         t = float(r["true_distance_m"])
         for key, val in (("height", e.z_height), ("ground", e.z_ground), ("fused", e.distance_m)):
             if val is not None:

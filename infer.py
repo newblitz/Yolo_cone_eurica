@@ -17,7 +17,10 @@ import json
 import math
 from pathlib import Path
 
-from .distance import CameraModel, DistanceEstimator, format_label
+try:
+    from .distance import DistanceEstimator, build_estimator as shared_build_estimator, format_label
+except ImportError:
+    from distance import DistanceEstimator, build_estimator as shared_build_estimator, format_label
 
 VIDEO_EXTS = {".mp4", ".avi", ".mov", ".mkv"}
 DISPLAY = {"cone": "Cone", "barrier": "Barrier", "stop_sign": "Stop Sign"}
@@ -26,12 +29,10 @@ CONF_MARK = {"high": "", "medium": "", "low": "?", "none": ""}
 
 
 def build_estimator(args, w: int, h: int) -> DistanceEstimator:
-    kw = dict(cam_height_m=args.cam_height, pitch_deg=args.pitch)
-    if args.focal_px:
-        cam = CameraModel.from_focal(w, h, args.focal_px, args.ref_width, **kw)
-    else:
-        cam = CameraModel.from_hfov(w, h, args.hfov, **kw)
-    return DistanceEstimator(cam)
+    return shared_build_estimator(
+        w, h, hfov=args.hfov, focal_px=args.focal_px, ref_width=args.ref_width,
+        cam_height=args.cam_height, pitch=args.pitch,
+    )
 
 
 def draw(img, box, text, color):
