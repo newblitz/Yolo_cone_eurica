@@ -1,0 +1,16 @@
+__pycache__/
+*.py[cod]
+.DS_Store
+
+data/
+runs/
+*.log
+configs_sources.yaml
+results/*
+!results/benchmark.md
+!results/hardware.txt
+weights/*_onnx/
+weights/*_openvino_model/
+weights/*_pruned*.pt
+yolo11*.pt
+!weights/yolo11n_best.pt
