@@ -7,7 +7,6 @@ and stop signs, then estimates object distance from each bounding box.
 
 **Name: Prateek Singh**<br>
 Email: [prateeklector007@gmail.com](mailto:prateeklector007@gmail.com),
-Phone:+918962255639
 
 ## Problem and approach
 
